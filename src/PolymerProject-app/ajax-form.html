@@ -1,0 +1,43 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="ajax-sample">
+
+  <style>
+
+  </style>
+  <template>
+    <iron-ajax id="ajax" url="https://www.googleapis.com/youtube/v3/search" params='{"part":"snippet", "q":"polymer", "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}' handle-as="json" last-response="{{ajaxResponse}}" on-request="handleRequest"
+    on-response="handleResponse" on-error="handleError"></iron-ajax>
+    <button on-click="getResult">Get Results</button>
+    <h2>Ajax Results</h2>
+    <template is="dom-repeat" items="{{ajaxResponse.items}}">
+        <ul>
+          <li>[[item.snippet.title]]</li>
+        </ul>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: "ajax-sample",
+
+      properties: {
+
+        ajaxResponse: {
+          type: String,
+          value: []
+        }
+
+      },
+      
+      getResult: function(e) {
+        this.$.ajax.generateRequest();
+      }
+
+    });
+  </script>
+
+</dom-module>

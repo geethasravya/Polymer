@@ -1,0 +1,93 @@
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="lazy-import" href="about-us.html">
+<link rel="lazy-import" href="sample-form.html">
+<link rel="lazy-import" href="my-home.html">
+
+<dom-module id="my-app">
+    <template>
+        <style>
+            .toolbar {
+                background-color:orange
+            }
+            .toolbar a {
+                color: white;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+                font-size: 20px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        </style>
+        <app-location route="{{route}}">
+        </app-location>
+
+        <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
+        </app-route>
+        <app-header reveals>
+            <app-toolbar class="toolbar">
+                <iron-selector selected="[[page]]" attr-for-selected="name" role="navigation">
+                    <a name="home" href="my-home">Home</a>
+                    <a name="about" href="about-us">About</a>
+                    <a name="form" href="sample-form">Sample Form</a>
+                </iron-selector>
+            </app-toolbar>
+        </app-header>
+        <iron-pages selected="[[page]]" attr-for-selected="name">
+            <my-home name="my-home"></my-home>
+            <about-us name="about-us"></about-us>
+            <sample-form-app name="sample-form"></sample-form-app>
+        </iron-pages>
+    </template>
+    <script>
+        class MyApp extends Polymer.Element {
+            static get is() { return 'my-app' }
+            static get properties() {
+                return {
+                    page: {
+                        type: String,
+                        reflectToAttribute: true,
+                        observer: '_pageChanged',
+                    },
+                    routeData: Object,
+                    subroute: Object,
+                    rootPath: String,
+                };
+            }
+
+            static get observers() {
+                return [
+                    '_routePageChanged(routeData.page)',
+                ];
+            }
+
+            _routePageChanged(page) {
+                // If no page was found in the route data, page will be an empty string.
+                // Default to 'about-us' in that case.
+                this.page = page || 'my-home';
+
+                // Close a non-persistent drawer when the page & route are changed.
+                /* if (!this.$.drawer.persistent) {
+                    this.$.drawer.close();
+                } */
+            }
+
+            _pageChanged(page) {
+                // Load page import on demand. Show 404 page if fails
+                const resolvedPageUrl = this.resolveUrl(page + '.html');
+                Polymer.importHref(
+                    resolvedPageUrl,
+                    null,
+                    null,
+                    true);
+            }
+        }
+        window.customElements.define(MyApp.is, MyApp)
+    </script>
+</dom-module>

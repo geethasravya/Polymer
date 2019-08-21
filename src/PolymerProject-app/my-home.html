@@ -1,0 +1,27 @@
+<dom-module id=my-home>
+    
+    <template>
+        <style>
+            .center {
+                text-align: center ;
+            }
+        </style>
+        <h2 class="center"> Welcome [[hname]]!</h2>
+    </template>
+    <script>
+        class MyHome extends Polymer.Element {
+            static get is() {
+                return "my-home";
+            }
+            static get properties() {
+                return {
+                    hname : {
+                        value : "Home",
+                        type: "String"
+                    }
+                }
+            }
+        }
+        window.customElements.define(MyHome.is, MyHome)
+    </script>
+</dom-module>
